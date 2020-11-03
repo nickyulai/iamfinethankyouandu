@@ -13,11 +13,6 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
-# from news.models import EtTodayNews, AppleDailyNews, YahooNews, EBCNews, TVBSNews, SETNNews, LTNNews, MoneyNews
-# from mushishi import mynlp, newsbot
-# from django.http import HttpResponseRedirect
-# from mushishi.wordcloud import news_phrase
-# from mushishi.models import KeywordList
 
 fileConfig('config.ini')
 logger = logging.getLogger('News_Log:')
@@ -95,9 +90,6 @@ class EtToday(News):
             'div', class_="part_list_2").find_all('h3')
         for news in the_newest_news:
             news_href = news.find('a').get('href')
-            # db url duplitcate
-            # if EtTodayNews.objects.filter(url=f'{self.base_url}{news_href}'):
-            #     continue
             date_time = news.find('span', class_="date").text
             news_type = news.find('em').text
             news_title = news.find('a').text
@@ -105,22 +97,7 @@ class EtToday(News):
             # nlp_tag = mynlp.content_nlp(news_content)
             logger.debug(f'News Title: {news_title} \n News Type: {news_type} News Created Time: {date_time} \n'
                          f'News URL: {self.base_url}{news_href} \n News Content: {news_content}')
-            # keyword count
-            # keyword_count = self.get_keyword_count(news_content)
-            # etn = EtTodayNews(
-            #     url=f'{self.base_url}{news_href}',
-            #     news_type=news_type,
-            #     title=news_title,
-            #     text=news_content,
-            #     created_time=datetime.datetime.strptime(
-            #         date_time, '%Y/%m/%d %H:%M'),
-            #     nlp_tag=nlp_tag,
-            #     pushed=0,
-            #     keyword_count=keyword_count,
-            # )
-            # etn.save()
-            # newsbot.message2bot_by_news(
-            #     'ETToday', f'{self.base_url}{news_href}')
+        
         logger.info(f'Finished get {self.__class__.__name__} Newest News.')
 
     def get_news_content(self, url):
@@ -160,17 +137,6 @@ class EtToday(News):
                         f'News Title: {news_title} \n '
                         f'News Type: {news_type[1:-1]} News Created Time: {date_time[1:-1]} \n'
                         f'News URL: {news_href} \n News Content: {news_content}')
-                    # keyword count
-                    # etn = EtTodayNews(
-                    #     url=news_href,
-                    #     news_type=news_type[1:-1],
-                    #     title=news_title,
-                    #     text=news_content,
-                    #     created_time=created_time,
-                    #     nlp_tag=nlp_tag,
-                    #     pushed=-1,
-                    # )
-                    # etn.save()
                 except:
                     logger.exception(f'{news_href}')
                     continue
@@ -194,8 +160,6 @@ class AppleDaily(News):
         try:
             for news in the_newest_news_list:
                 news_href = news.find('a').get('href')
-                # if AppleDailyNews.objects.filter(url=f'{self.base_url}{news_href}'):
-                #     continue
                 news_type = news_href.split('/')[1]
                 news_title = news.find('span', class_=True).text
                 date_time = news.find('div', class_="timestamp").text
@@ -206,22 +170,6 @@ class AppleDaily(News):
                     f'News Title: {news_title} News Type: {news_type} \n'
                     f'News URL: {self.base_url}{news_href} News Date Time: {date_time} \n'
                     f'News Content: {news_content}')
-                # keyword count
-                # keyword_count = self.get_keyword_count(news_content)
-                # adn = AppleDailyNews(
-                #     url=f'{self.base_url}{news_href}',
-                #     news_type=news_type,
-                #     title=news_title,
-                #     text=news_content,
-                #     created_time=datetime.datetime.strptime(
-                #         date_time.split(': ')[2], '%Y/%m/%d %H:%M'),
-                #     nlp_tag=nlp_tag,
-                #     pushed=0,
-                #     keyword_count=keyword_count,
-                # )
-                # adn.save()
-                # newsbot.message2bot_by_news(
-                #     'AppleDaily', f'{self.base_url}{news_href}')
         except:
             logger.exception('Somrthing error when get appledaily news')
         finally:
@@ -292,16 +240,6 @@ class AppleDaily(News):
                         f'News Title: {news_title} News Type: {news_type} \n'
                         f'News URL: {news_href} News Date Time: {date_time} \n'
                         f'News Content: {news_content}')
-                    # adn = AppleDailyNews(
-                    #     url=news_href,
-                    #     news_type=news_type,
-                    #     title=news_title,
-                    #     text=news_content,
-                    #     created_time=news_pub_time,
-                    #     nlp_tag=nlp_tag,
-                    #     pushed=-1,
-                    # )
-                    # adn.save()
                 news_num += 20
             except:
                 logger.exception('Something error when get appledaily search news.')
@@ -332,8 +270,6 @@ class Yahoo(News):
             for news in the_news_list:
                 try:
                     news_href = news.find('a').get('href')
-                    # if YahooNews.objects.filter(url=news_href):
-                    #     continue
                     news_title = news.find('a').text
                     date_time, news_content = self.get_news_content(news_href)
                     # nlp_tag = mynlp.content_nlp(news_content)
@@ -343,18 +279,6 @@ class Yahoo(News):
                         f'News Content: {news_content}')
                     # keyword count
                     keyword_count = self.get_keyword_count(news_content)
-                    # yhn = YahooNews(
-                    #     url=news_href,
-                    #     news_type=board,
-                    #     title=news_title,
-                    #     text=news_content,
-                    #     created_time=date_time,
-                    #     nlp_tag=nlp_tag,
-                    #     pushed=0,
-                    #     keyword_count=keyword_count,
-                    # )
-                    # yhn.save()
-                    # newsbot.message2bot_by_news('Yahoo', news_href)
                 except:
                     logger.exception(
                         f'Get Yahoo! {board} News({news_href}) Fail.')
@@ -405,16 +329,6 @@ class Yahoo(News):
                 f'News Title: {news_title} News Type: {news_type} \n'
                 f'News URL: {self.base_url}{news_href} News Date Time: {date_time} \n'
                 f'News Content: {news_content}')
-            # yhn = YahooNews(
-            #     url=news_href,
-            #     news_type=news_type,
-            #     title=news_title,
-            #     text=news_content,
-            #     created_time=date_time,
-            #     nlp_tag=nlp_tag,
-            #     pushed=0,
-            # )
-            # yhn.save()
         logger.info(f'Finished get {self.__class__.__name__} Search News.')
 
     def convert_datetime(self, last_time):
@@ -457,20 +371,6 @@ class EBC(News):
                     f'News Content: {news_content}')
                 # keyword count
                 keyword_count = self.get_keyword_count(news_content)
-                # en = EBCNews(
-                #     url=f'{self.base_url}{news_href}',
-                #     news_type=news_type,
-                #     title=news_title,
-                #     text=news_content,
-                #     created_time=datetime.datetime.strptime(
-                #         f'{datetime.datetime.now().year}/{date_time}', '%Y/%m/%d %H:%M'),
-                #     nlp_tag=nlp_tag,
-                #     pushed=0,
-                #     keyword_count=keyword_count,
-                # )
-                # en.save()
-                # newsbot.message2bot_by_news(
-                #     'EBC', f'{self.base_url}{news_href}')
         logger.info(f'Finished get {self.__class__.__name__} Newest News.')
 
     def get_news_content(self, url):
@@ -517,16 +417,6 @@ class EBC(News):
                         f'News Title: {news_title} News Type: {news_type}\n'
                         f'News URL: {self.base_url}{news_href} News Date Time: {date_time} \n'
                         f'News Content: {news_content}')
-                    # en = EBCNews(
-                    #     url=f'{self.base_url}{news_href}',
-                    #     news_type=news_type,
-                    #     title=news_title,
-                    #     text=news_content,
-                    #     created_time=judge_time,
-                    #     nlp_tag=nlp_tag,
-                    #     pushed=-1,
-                    # )
-                    # en.save()
             except:
                 logger.exception('Maybe error when get ebc news search.')
                 break
@@ -561,22 +451,6 @@ class TVBS(News):
                     f'News Title: {news_title} News Type: {news_type}\n'
                     f'News URL: {self.base_url}{news_href} News Date Time: {convert_time} \n'
                     f'News Content: {news_content}')
-                # keyword count
-                # keyword_count = self.get_keyword_count(news_content)
-                # tn = TVBSNews(
-                #     url=f'{self.base_url}{news_href}',
-                #     news_type=news_type,
-                #     title=news_title,
-                #     text=news_content,
-                #     created_time=datetime.datetime.strptime(
-                #         date_time, '%Y/%m/%d %H:%M'),
-                #     nlp_tag=nlp_tag,
-                #     pushed=0,
-                #     keyword_count=keyword_count,
-                # )
-                # tn.save()
-                # newsbot.message2bot_by_news(
-                #     'TVBS', f'{self.base_url}{news_href}')
         logger.info(f'Finished get {self.__class__.__name__} Newest News.')
 
     def get_news_content(self, url):
@@ -625,17 +499,6 @@ class TVBS(News):
                     f'News Title: {news_title} News Type: search_news \n'
                     f'News URL: {href} News Date Time: {judge_time} \n'
                     f'News Content: {news_content}')
-                # tn = TVBSNews(
-                #     url=news_href,
-                #     news_type=news_type,
-                #     title=news_title,
-                #     text=news_content,
-                #     created_time=datetime.datetime.strptime(
-                #         date_time, '%Y/%m/%d %H:%M'),
-                #     nlp_tag=nlp_tag,
-                #     pushed=-1,
-                # )
-                # tn.save()
             page += 1
         logger.info(f'Finished get {self.__class__.__name__} Search News.')
 
@@ -656,8 +519,6 @@ class SETN(News):
                 'div', class_="row NewsList").find_all('div', recursive=False)
             for news in news_list:
                 news_href = news.find('a', class_="gt").get('href')
-                # if SETNNews.objects.filter(url=f'{self.base_url}{news_href}'):
-                #     continue
                 news_title = news.find('h3', class_="view-li-title").text
                 news_type = news.a.text
                 date_time = news.time.text  # '07/23 12:10'
@@ -668,22 +529,6 @@ class SETN(News):
                     f'News Title: {news_title} News Type: {news_type} \n'
                     f'News URL: {self.base_url}{news_href} News Date Time: {date_time} \n'
                     f'News Content: {news_content}')
-                # keyword count
-                # keyword_count = self.get_keyword_count(news_content)
-                # sn = SETNNews(
-                #     url=f'{self.base_url}{news_href}',
-                #     news_type=news_type,
-                #     title=news_title,
-                #     text=news_content,
-                #     created_time=datetime.datetime.strptime(
-                #         f'{datetime.datetime.now().year}/{date_time}', '%Y/%m/%d %H:%M'),
-                #     nlp_tag=nlp_tag,
-                #     pushed=0,
-                #     keyword_count=keyword_count,
-                # )
-                # sn.save()
-                # newsbot.message2bot_by_news(
-                #     'SETN', f'{self.base_url}{news_href}')
                 time.sleep(5)
         logger.info(f'Finished get {self.__class__.__name__} Newest News.')
 
@@ -731,17 +576,6 @@ class SETN(News):
                         f'News Title: {news_title} News Type: {news_type} \n'
                         f'News URL: {self.base_url}/{news_href} News Date Time: {date_time} \n'
                         f'News Content: {news_content}')
-                    # sn = SETNNews(
-                    #     url=f'{self.base_url}{news_href}',
-                    #     news_type=news_type,
-                    #     title=news_title,
-                    #     text=news_content,
-                    #     created_time=datetime.datetime.strptime(
-                    #         date_time, '%Y/%m/%d %H:%M'),
-                    #     nlp_tag=nlp_tag,
-                    #     pushed=-1,
-                    # )
-                    # sn.save()
                     time.sleep(5)
                 page += 1
             except:
@@ -791,21 +625,6 @@ class LTN(News):
             f'News Title: {news_title} News Type: {news_type_en} \n'
             f'News URL: {news_href} News Date Time: {date_time} \n'
             f'News Content: {news_content}')
-        # keyword count
-        # keyword_count = self.get_keyword_count(news_content)
-        # ln = LTNNews(
-        #     url=news_href,
-        #     news_type=news_type_en,
-        #     title=news_title,
-        #     text=news_content,
-        #     created_time=datetime.datetime.strptime(
-        #         f'{str(datetime.date.today())} {date_time}', '%Y-%m-%d %H:%M'),
-        #     nlp_tag=nlp_tag,
-        #     pushed=0,
-        #     keyword_count=keyword_count,
-        # )
-        # ln.save()
-        # newsbot.message2bot_by_news('LTN', news_href)
 
     def get_news_content(self, url):
         content_soup = self.get_soup_from_requests(url)
@@ -871,17 +690,6 @@ class LTN(News):
                         f'News Title: {news_title} News Type: {news_type} \n'
                         f'News URL: {news_href} News Date Time: {date_time} \n'
                         f'News Content: {news_content}')
-                    # ln = LTNNews(
-                    #     url=news_href,
-                    #     news_type=news_type,
-                    #     title=news_title,
-                    #     text=news_content,
-                    #     created_time=datetime.datetime.strptime(
-                    #         date_time, '%Y-%m-%d %H:%M'),
-                    #     nlp_tag=nlp_tag,
-                    #     pushed=-1,
-                    # )
-                    # ln.save()
                 page += 1
             until_date, middle_date, page = middle_date, since_date, 1
         logger.info(f'Finished get {self.__class__.__name__} Search News.')
@@ -915,22 +723,6 @@ class Money(News):
                     f'News Title: {news_title} News Type: {news_type} \n'
                     f'News URL: {news_href} News Date Time: {datetime.datetime.now().year}/{date_time} \n'
                     f'News Content: {news_content}')
-                # keyword count
-                # keyword_count = self.get_keyword_count(news_content)
-                # mn = MoneyNews(
-                #     url=news_href,
-                #     news_type=news_type,
-                #     title=news_title,
-                #     text=news_content,
-                #     created_time=datetime.datetime.strptime(
-                #         f'{datetime.datetime.now().year}/{date_time}', '%Y/%m/%d %H:%M'),
-                #     nlp_tag=nlp_tag,
-                #     pushed=0,
-                #     keyword_count=keyword_count,
-                # )
-                # mn.save()
-                # newsbot.message2bot_by_news(
-                #     'Money', news_href)
         logger.info(f'Finished get {self.__class__.__name__} Newest News.')
 
     def get_news_content(self, url):
@@ -983,17 +775,6 @@ class Money(News):
                     f'News Title: {news_title} News Type: {news_type} \n'
                     f'News URL: {news_href} News Date Time: {date_time} \n'
                     f'News Content: {news_content}')
-                # mn = MoneyNews(
-                #     url=news_href,
-                #     news_type=news_type,
-                #     title=news_title,
-                #     text=news_content,
-                #     created_time=datetime.datetime.strptime(
-                #         date_time, '%Y-%m-%d %H:%M'),
-                #     nlp_tag=nlp_tag,
-                #     pushed=-1,
-                # )
-                # mn.save()
             page += 1
         logger.info(f'Finished get {self.__class__.__name__} Search News.')
 
